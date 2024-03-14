@@ -16,9 +16,14 @@
     </div>
 
       <div class="sub-section">
-        <div class="left-part">
+        <div v-if="edit_id===true"class="left-part">
             Add GreenHouse Import
         </div>
+
+       
+            <div v-if="edit_id===false" class="left-part">Edit GreenHouse</div>
+
+        
 
         <div class="right-part">
 
@@ -33,7 +38,10 @@
                  
                  <br/>
                  <br/>
+                    
 
+                 <div v-if="edit_id ===true">
+                 
                  <label  for="api-key" class="greenhouse-api-key">GreenHouse API Key</label> <br/>
                  <input class="width" v-model="apiKey" placeholder="Enter API Key " type="text"  @keyup="validateApiKey" required>
                  <!-- <button @click="checkApiKey">Check API Key</button> -->
@@ -61,7 +69,10 @@
 
                  <span class="use-lever">Use Lever Sandbox</span>
                 </div>
+                
                  <br/><br/>
+
+                </div>
                   <label for="email" class="owneremail">Owner email</label> <br/> 
                  <input class="width" type="email" v-model="user.email" required> 
                  <br/> 
@@ -139,14 +150,23 @@
     
 </div>
               <br/>
-                <div>
-                    <button  type='submit'  class="get-button" >Get Started</button>
+                <div v-if="edit_id===true">
+                    <button  type='submit'  class="get-button" v-on:keyup.enter="submitForm">Get Started</button>
+
+                </div>
+
+                <div v-if="edit_id===false">
+                    <button  type='submit'  class="get-button" @click =saveChanges >Edit</button>
+                   
                 </div>
              </form>
             </div>
+            
         </div>
-       
+
     </div>
+       
+    <!-- </div> -->
 </template>
 
 <script setup>
@@ -154,8 +174,17 @@
 const route=useRoute();
 console.log(route.path);
 
-import _ from 'lodash'
-import axios, {isCancel, AxiosError} from 'axios'
+const edit_id=ref(true);
+const id = route.query.id;
+
+const mode=route.query.mode;
+
+if(id && id.length>0 ){
+    edit_id.value=false;
+}
+else{
+    edit_id.value=true;
+}
 
 const user =ref({
     client:"",
@@ -163,10 +192,73 @@ const user =ref({
     tag:"",
     cal:""
 })
+
+const editUSer= async(id) =>{
+
+try{
+
+    const response = await axios.get(`http://localhost:8000/user/${id}`);
+    if(response.status===200)console.log("success");
+
+    user.value.client= response.data.Client_Name;   
+    user.value.email=  response.data.Email;
+    user.value.tag=response.data.Tag;
+    user.value.cal=response.data.Cut_Off_Date;
+    
+
+}catch(error){
+    console.error("Not able to edit ",error);
+}
+
+}
+
+
+const saveChanges = async () =>{
+
+try{
+
+    await axios.put(`http://localhost:8000/user/${id}`,{
+        Client_Name:user.value.client,
+        Email:user.value.email,
+        Tag:user.value.tag,
+        Cut_Off_Date:user.value.cal
+    })
+
+}catch(error){
+console.error("Not able to edit ",error);
+}
+
+
+}
+
+
+
+if(mode==='edit'){
+    console.log("Inside the edit ");
+
+editUSer(id);
+
+}
+
+
+    
+
+
+
+
+
+
+import _ from 'lodash'
+import axios, {isCancel, AxiosError} from 'axios'
+
+
+
+
+
 const errorMsg=ref('');
 
 const router=useRouter();
-console.log(router.path);
+
 // const Testsubmit=async()=>{
 
 
@@ -200,7 +292,7 @@ const submitForm = async() => {
     }
 
     try{
-        await axios.post("http://localhost:8000/submit-form",{
+        await axios.post("http://localhost:8000/user",{
             Client_Name:user.value.client,
             Email:user.value.email,
             Tag:user.value.tag,
@@ -367,7 +459,7 @@ const validateApiKey = _.debounce(async () => {
 
 
 
-<style  >
+<style scoped >
 
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
 
