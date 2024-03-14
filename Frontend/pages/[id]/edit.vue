@@ -6,24 +6,30 @@
             <h4>Edit Client</h4>
         </div>
         <div class="mb-3">
-            <label for="">Name  </label>
-            <input type="text" class="form-control" v-model="clientName" >
+            <label for="">Name:  </label>
+            <input type="text" class="width-n" v-model="clientName" >
         </div>
-
+      
+        <br/>
         
         <div class="mb-3">
-            <label for="">Email </label>
-            <input type="text" class="form-control" v-model="email" >
+            <label for="">Email: </label>
+            <input type="text" class="width-e" v-model="email" >
         </div>
 
-        <div class="mb-3">
-            <label for="">Tag </label>
-            <input type="text" class="form-control " v-model="tag" >
-        </div>
+        <br/>
 
         <div class="mb-3">
-            <label for="">Date </label>
-            <input type="text" class="form-control" v-model="date" >
+            <label for="">Tag: </label>
+            <input type="text" class="width-t " v-model="tag"  >
+        </div>
+
+        <br/>
+
+
+        <div class="mb-3">
+            <label for="">Date: </label>
+            <input type="text" class="width-d" v-model="date" >
         </div>
 
         <br> </br>
@@ -62,7 +68,7 @@ const fetchAndUpdateData=async() => {
     console.log("In update",clientId);
     try {
 
-        const response = await axios.get(`http://localhost:8000/submit-form/${clientId}`);
+        const response = await axios.get(`http://localhost:8000/user/${clientId}`);
 
         if(response.status=== 200)console.log("Success");
         clientName.value = response.data.Client_Name;
@@ -85,7 +91,7 @@ const editStudent = async() =>{
 
     try{
  
-        const response = await axios.put(`http://localhost:8000/submit-form/${id}`,{
+        const response = await axios.put(`http://localhost:8000/user/${id}`,{
         Client_Name :clientName.value,
         Email :email.value,
         Tag: tag.value,
@@ -107,7 +113,21 @@ const editStudent = async() =>{
 
 
 
-<style>
+<style scoped>
 
+.width-t{
+    margin-left: 25px;
+
+}
+.width-e{
+margin-left: 10px;
+}
+.width-n{
+    margin-left: 10px;
+}
+
+.width-d{
+    margin-left: 18px;
+}
 
 </style>

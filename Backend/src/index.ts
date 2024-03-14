@@ -15,7 +15,7 @@ const router = new Router();
 createConnection().then(async connection => {
     console.log("Connected to the database 1");
 
-    router.post('/submit-form', async (ctx) => {
+    router.post('/user', async (ctx) => {
         // Assuming ctx.request.body contains the form data
         console.log("Hit from Front end project");
         
@@ -70,7 +70,7 @@ createConnection().then(async connection => {
         }
     })
 
-    router.get('/submit-form/:id', async (ctx: Koa.Context) => {
+    router.get('/user/:id', async (ctx: Koa.Context) => {
       // This will be a string because URL parameters are always strings
     
         // If your ID is a numeric type in the database, ensure to convert it
@@ -96,8 +96,11 @@ createConnection().then(async connection => {
     
     
     
-    router.delete('/users/:id',async(ctx) =>{
+    router.delete('/user/:id',async(ctx) =>{
         const userId = ctx.params.id;
+
+
+        
 
         try {
 
@@ -106,18 +109,21 @@ createConnection().then(async connection => {
             console.log(result.raw);
             console.log(result.affected);
 
-            if(result.affected === 404){
-                console.log("Failure");
-                ctx.status = 404;
-                ctx.body = {result};
+            if(result.affected && result.affected>0){
+                ctx.status = 200;
+                ctx.body ={ message: "User successfully deleted"};
+
             }
             else {
-                ctx.status =200;
-                ctx.body ={ message: "User successfully deleted"};
+                console.log("User not found")
+                ctx.status =400;
+                ctx.body ={ message: "User not found "};
 
             }
         }catch(error){
             console.error("Error ",error);
+            ctx.status=500;
+            ctx.body={message:"Internal server error"}
         }
     });
 
@@ -126,7 +132,7 @@ createConnection().then(async connection => {
         return await repository.delete(userId); // Delete the user by ID
     }
 
-    router.put('/submit-form/:id', async (ctx) => {
+    router.put('/user/:id', async (ctx) => {
     // Extract the ID from the URL path
     const userId = parseInt(ctx.params.id, 10);
     if (isNaN(userId)) {

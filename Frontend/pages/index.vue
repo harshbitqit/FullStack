@@ -42,7 +42,13 @@
                  <td>{{ item.Tag }}</td>
                  <td>{{ item.Cut_Off_Date }}</td>
                  <td>
-                    <NuxtLink :to="`/${item.id}/edit`" class="btn btn-success ">Edit</NuxtLink>
+                    <div class="button-e">
+                        <!-- <NuxtLink :to="`/user?id=${item.id}`" class="btn btn-success" >Edit</NuxtLink> -->
+                        <button @click="handleEdit(item.id)">Edit</button>
+
+
+                    </div>
+                    
                 </td>
                 
                 </tr>
@@ -56,8 +62,15 @@
 
 <script  setup >
 
-const submit = async() => {
-    console.log("Hello");
+
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const handleEdit = (id) => {
+
+    router.push({path: `/user`, query :{id: id, mode: 'edit'}});
+
 }
 
 import {ref,onMounted} from 'vue';
@@ -82,6 +95,7 @@ onMounted(async () => {
 </script>
 
 <style scoped  >
+
 
 .table {
   
