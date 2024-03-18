@@ -179,6 +179,8 @@ const id = route.query.id;
 
 const mode=route.query.mode;
 
+
+
 if(id && id.length>0 ){
     edit_id.value=false;
 }
@@ -192,6 +194,8 @@ const user =ref({
     tag:"",
     cal:""
 })
+
+
 
 const editUSer= async(id) =>{
 
@@ -214,10 +218,11 @@ try{
 
 
 const saveChanges = async () =>{
-
+    console.log("Hello");
 try{
 
     await axios.put(`http://localhost:8000/user/${id}`,{
+       
         Client_Name:user.value.client,
         Email:user.value.email,
         Tag:user.value.tag,
@@ -232,13 +237,15 @@ console.error("Not able to edit ",error);
 }
 
 
-
 if(mode==='edit'){
     console.log("Inside the edit ");
 
 editUSer(id);
 
 }
+
+
+
 
 
     
